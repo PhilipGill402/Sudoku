@@ -10,5 +10,7 @@ class Board:
         for i in range(10):
             if i % 3 == 0:
                 pygame.draw.rect(self.surface, BLACK, pygame.Rect((i*(WIDTH/9), 0), (10, 800)))
+                pygame.draw.rect(self.surface, BLACK, pygame.Rect((0, i*(HEIGHT/9)), (800, 10)))
             else:
-                pygame.draw.rect(self.surface, BLACK, pygame.Rect((i*(WIDTH/9), 0), (5, 800)))
+                pygame.draw.rect(self.surface, BLACK, pygame.Rect((i*(WIDTH/9), 0)), (5, 800))
+                pygame.draw.rect(self.surface, BLACK, pygame.Rect((0, (i*(HEIGHT/9))), (800, 5)))
