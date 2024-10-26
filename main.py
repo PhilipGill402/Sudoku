@@ -4,9 +4,10 @@ from board import *
 
 pygame.init()
 
-surface = pygame.display.set_mode((WIDTH, HEIGHT))
+surface = pygame.display.set_mode((REAL_WIDTH, REAL_HEIGHT))
 running = True
 board = Board(surface)
+game = Game()
 
 while running:
     

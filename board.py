@@ -4,24 +4,35 @@ import pygame
 class Board:
     def __init__(self, surface):
         self.surface = surface
+        self.board = self.createBoard()
+
+    def createBoard(self):
+        board = [] 
+
+        for i in range(9):
+            board.append([])
+            for j in range(9):
+                board[i].append(0)
+        
+        return board
 
     def drawBoard(self):
         self.surface.fill(WHITE)
         for i in range(10):
             if i % 3 == 0:
-                pygame.draw.rect(self.surface, BLACK, pygame.Rect(i*(WIDTH/9), 0, 10, 800))
-                pygame.draw.rect(self.surface, BLACK, pygame.Rect(0, i*(HEIGHT/9), 800, 10))
+                pygame.draw.rect(self.surface, BLACK, pygame.Rect(i*(WIDTH/9), 0, 10, 810))
+                pygame.draw.rect(self.surface, BLACK, pygame.Rect(0, i*(HEIGHT/9), 810, 10))
             else:
-                pygame.draw.rect(self.surface, BLACK, pygame.Rect(i*(WIDTH/9), 0, 5, 800))
-                pygame.draw.rect(self.surface, BLACK, pygame.Rect(0, (i*(HEIGHT/9)), 800, 5))
+                pygame.draw.rect(self.surface, BLACK, pygame.Rect(i*(WIDTH/9), 0, 5, 810))
+                pygame.draw.rect(self.surface, BLACK, pygame.Rect(0, (i*(HEIGHT/9)), 810, 5))
 
 
 if __name__ == "__main__":
-    surface = pygame.display.set_mode((WIDTH, HEIGHT)) 
+    surface = pygame.display.set_mode((REAL_WIDTH, REAL_HEIGHT)) 
     running = True
     board = Board(surface) 
     board.drawBoard()
-
+    print(board.board)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
