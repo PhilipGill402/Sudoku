@@ -2,6 +2,9 @@ import pygame
 from constants import *
 from board import *
 
+def getPos(x, y):
+    return (x//SQUARE_SIZE, y//SQUARE_SIZE)
+
 pygame.init()
 
 surface = pygame.display.set_mode((REAL_WIDTH, REAL_HEIGHT))

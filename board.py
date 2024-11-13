@@ -41,10 +41,10 @@ class Board:
 
         for i in range(9):
             for j in range(9):
-                num = self.board[i][j]
+                num = self.board[j][i]
                 text = self.font.render(str(num), True, BLACK)
                 textRect = text.get_rect()
-                textRect.center = ((i*((WIDTH/9)-50)), (j*((HEIGHT/9)-50)))
+                textRect.center = (i * SQUARE_SIZE + (SQUARE_SIZE//2), j * SQUARE_SIZE + (SQUARE_SIZE//2))
                 self.surface.blit(text, textRect)
 
 if __name__ == "__main__":
