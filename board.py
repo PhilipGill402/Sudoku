@@ -41,18 +41,18 @@ class Board:
 
         for i in range(9):
             for j in range(9):
-                num = self.board[j][i]
-                text = self.font.render(str(num), True, BLACK)
-                textRect = text.get_rect()
-                textRect.center = (i * SQUARE_SIZE + (SQUARE_SIZE//2), j * SQUARE_SIZE + (SQUARE_SIZE//2))
-                self.surface.blit(text, textRect)
+                if self.board[j][i] != 0: 
+                    num = self.board[j][i]
+                    text = self.font.render(str(num), True, BLACK)
+                    textRect = text.get_rect()
+                    textRect.center = (i * SQUARE_SIZE + (SQUARE_SIZE//2), j * SQUARE_SIZE + (SQUARE_SIZE//2))
+                    self.surface.blit(text, textRect)
 
 if __name__ == "__main__":
     surface = pygame.display.set_mode((REAL_WIDTH, REAL_HEIGHT)) 
     running = True
     board = Board(surface) 
     board.drawBoard()
-    print(board.board)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
