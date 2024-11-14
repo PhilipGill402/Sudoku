@@ -31,13 +31,32 @@ class Board:
 
     def drawBoard(self):
         self.surface.fill(WHITE)
-        for i in range(10):
-            if i % 3 == 0:
-                pygame.draw.rect(self.surface, BLACK, pygame.Rect(i*(WIDTH/9), 0, 10, 810))
-                pygame.draw.rect(self.surface, BLACK, pygame.Rect(0, i*(HEIGHT/9), 810, 10))
+        y = 0 
+        for i in range(13):
+            x = 0 
+            for j in range(13):
+                print(f"(j,i): {(j, i)}")
+                print(f"(x,y): {(x, y)}") 
+                
+                if i % 4 == 0:
+                     if j % 4 == 0:
+                        pygame.draw.rect(self.surface, BLACK, pygame.Rect(x, y, 10, 10))
+                        x += 10
+                     else:
+                        pygame.draw.rect(self.surface, BLACK, pygame.Rect(x, y, 75, 10))
+                        x += 75 
+                else:
+                    if j % 4 == 0:
+                        pygame.draw.rect(self.surface, BLACK, pygame.Rect(x, y, 10, 75))
+                        x += 10 
+                    else:
+                        pygame.draw.rect(self.surface, WHITE, pygame.Rect(x, y, 75, 75))
+                        x += 75
+
+            if i % 4 == 0:
+                y += 10
             else:
-                pygame.draw.rect(self.surface, BLACK, pygame.Rect(i*(WIDTH/9), 0, 5, 810))
-                pygame.draw.rect(self.surface, BLACK, pygame.Rect(0, (i*(HEIGHT/9)), 810, 5))
+                y += 75
 
         for i in range(9):
             for j in range(9):
