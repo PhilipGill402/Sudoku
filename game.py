@@ -17,7 +17,5 @@ class Game():
 
     def highlightSelected(self, pos, board):
         num = board[pos[1]][pos[0]]
-        (x, y) = self.getPos(pos) 
-
-        if num == 0:
-           pygame.draw.rect(self.surface, GREY, pygame.Rect(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE)) 
+        (x, y) = pos 
+        pygame.draw.rect(self.surface, GREY, pygame.Rect(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 5) 
