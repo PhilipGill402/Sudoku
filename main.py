@@ -11,9 +11,13 @@ GameBoard = Board(surface)
 game = Game(surface)
 board = GameBoard.board
 
+def printBoard(board):
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            print(board[i][j].value, end=", ")
+        print()
 
 while running:
-    
     GameBoard.drawBoard()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -25,23 +29,31 @@ while running:
         elif event.type == pygame.KEYDOWN and game.selected is not None:
             x, y = game.getPos(pygame.mouse.get_pos())
             if event.key == pygame.K_1:
-                board[y][x] = Cell(1)
+                val = 1
             elif event.key == pygame.K_2:
-                board[y][x] = Cell(2)
+                val = 2
             elif event.key == pygame.K_3:
-                board[y][x] = Cell(3)
+                val = 3
             elif event.key == pygame.K_4:
-                board[y][x] = Cell(4)
+                val = 4
             elif event.key == pygame.K_5:
-                board[y][x] = Cell(5)
+                val = 5
             elif event.key == pygame.K_6:
-                board[y][x] = Cell(6)
+                val = 6
             elif event.key == pygame.K_7:
-                board[y][x] = Cell(7)
+                val = 7
             elif event.key == pygame.K_8:
-                board[y][x] = Cell(8)
+                val = 8
             elif event.key == pygame.K_9:
-                board[y][x] = Cell(9)
+                val = 9
+            elif event.key == pygame.K_BACKSPACE:
+                val = 0
+            else:
+                continue
+            if GameBoard.solvedBoard[y][x].value == val:
+                board[y][x] = Cell(val)
+            else:
+                board[y][x] = Cell(val, RED)
 
     if game.selected is not None: 
         game.highlightSelected(pos, board)
