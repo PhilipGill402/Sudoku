@@ -11,11 +11,13 @@ class Board:
         self.solvedBoard = self.solve(self.board)
         while self.solvedBoard is None:
             self.solvedBoard = self.solve(self.board)
+        
         pygame.font.init()
         self.font = pygame.font.Font("font.ttf", 32)
+        
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
-                self.board[j][i].reduceEntropy(self.board, (i, j))
+                self.board[i][j].reduceEntropy(self.board, (j, i))
 
     def createBoard(self):
         board = [
@@ -45,47 +47,36 @@ class Board:
                 rect = pygame.draw.rect(self.surface, WHITE, pygame.Rect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 5)
                 if self.board[j][i].value != 0:
                     num = self.board[j][i].value
-                    text = self.font.render(str(num), True, WHITE)
+                    text = self.font.render(str(num), True, self.board[j][i].color)
                     textRect = text.get_rect()
                     textRect.center = (i * SQUARE_SIZE + (SQUARE_SIZE//2), j * SQUARE_SIZE + (SQUARE_SIZE//2))
                     self.surface.blit(text, textRect)
 
+    def drawSolvedBoard(self):
+        self.surface.fill(BLACK)
+        for i in range(9):
+            for j in range(9):
+                rect = pygame.draw.rect(self.surface, WHITE, pygame.Rect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 5)
+                if self.solvedBoard[j][i].value != 0:
+                    num = self.solvedBoard[j][i].value
+                    text = self.font.render(str(num), True, WHITE)
+                    textRect = text.get_rect()
+                    textRect.center = (i * SQUARE_SIZE + (SQUARE_SIZE//2), j * SQUARE_SIZE + (SQUARE_SIZE//2))
+                    self.surface.blit(text, textRect)
+                    
     def findLowestEntropy(self, board):
         lowestEntropy = []
         lowestNum = 10 #its 10 because none can have more than 9 options (1-9)
         for i in range(len(board)):
             for j in range(len(board[i])):
-                cell = board[j][i]
-                if len(cell.options) < lowestNum and cell.value == 0:
-                    lowestEntropy = [(i, j)]
+                cell = board[i][j]
+                if len(cell.options) < lowestNum and not cell.collapsed:
+                    lowestEntropy = [(j, i)]
                     lowestNum = len(cell.options)
-                elif len(cell.options) == lowestNum:
-                    lowestEntropy.append((i, j))
+                elif len(cell.options) == lowestNum and not cell.collapsed:
+                    lowestEntropy.append((j, i))
                     
         return lowestEntropy
-
-    def isValid(self, board, num, pos):
-        row = board[pos[1]]
-        col = []
-        box = []
-        box.append(pos[0]//3)
-        box.append(pos[1]//3)
-
-        for i in range(box[0] * 3, box[0] * 3 + 3):
-            for j in range(box[1] * 3, box[1] * 3 + 3):
-                if board[j][i].value == num:
-                    return False
-
-        for i in board:
-            col.append(i[pos[0]])
-
-        for i in row:
-            if i.value == num:
-                return False
-        for i in col:
-            if i.value == num:
-                return False
-        return True
 
     def isSolved(self, board):
         for i in range(len(board)):
@@ -97,6 +88,11 @@ class Board:
 
     def solve(self, board):
         newBoard = copy.deepcopy(self.board)
+        #finds the entropy of all cells
+        for i in range(len(newBoard)):
+            for j in range(len(newBoard[i])):
+                newBoard[i][j].reduceEntropy(newBoard, (j, i))
+                
         while not self.isSolved(newBoard):
             #choose one cell
             lowestEntropy = self.findLowestEntropy(newBoard)
@@ -106,16 +102,17 @@ class Board:
 
             #we reached a deadend
             if len(chosenCell.options) == 0:
-                return None
+                return newBoard
             
             #collapse the cell
             idx = random.randint(0, len(chosenCell.options) - 1)
             chosenCell.value = chosenCell.options[idx]
             chosenCell.options = [chosenCell.value]
+            chosenCell.collapsed = True
 
             #calculate entropy of other cells
             for i in range(len(newBoard)):
                 for j in range(len(newBoard[i])):
-                    newBoard[i][j].reduceEntropy(newBoard, (i, j))
+                    newBoard[i][j].reduceEntropy(newBoard, (j, i))
 
         return newBoard
