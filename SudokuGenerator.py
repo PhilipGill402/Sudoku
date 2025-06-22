@@ -1,69 +1,50 @@
-import pygame
 import random
 import copy
 from constants import *
 from cell import *
 
-class Board:
-    def __init__(self, surface):
-        self.surface = surface
-        self.board = self.loadBoard()          
-        self.solvedBoard = self.solve(self.board)
-        while not self.isSolved(self.solvedBoard):
-            self.solvedBoard = self.solve(self.board)
-        
-        pygame.font.init()
-        self.font = pygame.font.Font("font.ttf", 32)
-        
-        for i in range(len(self.board)):
-            for j in range(len(self.board[i])):
-                self.board[i][j].reduceEntropy(self.board, (j, i))
+class SudokuGenerator:
+    def createBoard(self, clues: int) -> list[list[Cell]]:
+        #generates a solved full board   
+        board = [] 
 
-    def loadBoard(self):
-        board = []
-        #opens prebuilt boards
-        with open("boards.txt") as f:
-            #choose a random line 
-            lines = f.readlines()
-            numLines = len(lines) 
-            idx = random.randint(1, numLines//10) - 1
-            
-            #find all lines in this board and add them to the board 
-            for i, line in enumerate(lines):
-                if i >= (idx*10) and i < (idx*10) + 9:
-                    line = line.rstrip()
-                    line = list(line)
-                    line = [Cell(int(c)) for c in line] 
-                    board.append(line) 
-                elif i >= (idx*10) + 9:
-                    break
-                
+        for i in range(9):
+            board.append([])
+            for j in range(9):
+                board[i].append(Cell())
+        
+        while not self.isSolved(board): 
+            board = [] 
+
+            for i in range(9):
+                board.append([])
+                for j in range(9):
+                    board[i].append(Cell())
+
+            board = self.solve(board)
+
+        #generates the holes
+        holes = 0
+        targetHoles = 81 - clues
+
+        while holes < targetHoles:
+            #finds a random cell and sets it to zero 
+            idx = random.randint(0, 80)
+            x = idx // 9
+            y = idx % 9
+            cell = board[y][x]
+            board[y][x] = Cell()    
+
+            #checks if its a unique solution
+            if self.isUniqueSolution(board):
+                holes += 1
+            else:
+                board[y][x] = cell
+
+
+        
         return board
 
-    def drawBoard(self):
-        self.surface.fill(BLACK)
-        for i in range(9):
-            for j in range(9):
-                rect = pygame.draw.rect(self.surface, WHITE, pygame.Rect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 5)
-                if self.board[j][i].value != 0:
-                    num = self.board[j][i].value
-                    text = self.font.render(str(num), True, self.board[j][i].color)
-                    textRect = text.get_rect()
-                    textRect.center = (i * SQUARE_SIZE + (SQUARE_SIZE//2), j * SQUARE_SIZE + (SQUARE_SIZE//2))
-                    self.surface.blit(text, textRect)
-
-    def drawSolvedBoard(self):
-        self.surface.fill(BLACK)
-        for i in range(9):
-            for j in range(9):
-                rect = pygame.draw.rect(self.surface, WHITE, pygame.Rect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 5)
-                if self.solvedBoard[j][i].value != 0:
-                    num = self.solvedBoard[j][i].value
-                    text = self.font.render(str(num), True, WHITE)
-                    textRect = text.get_rect()
-                    textRect.center = (i * SQUARE_SIZE + (SQUARE_SIZE//2), j * SQUARE_SIZE + (SQUARE_SIZE//2))
-                    self.surface.blit(text, textRect)
-                    
     def findLowestEntropy(self, board):
         lowestEntropy = []
         lowestNum = 10 #its 10 because none can have more than 9 options (1-9)
@@ -142,3 +123,20 @@ class Board:
                     newBoard[i][j].reduceEntropy(newBoard, (j, i))
 
         return newBoard
+
+if __name__ == "__main__":
+    generator = SudokuGenerator()
+
+    #creates i number of boards and puts them in the boards.txt file for later access
+    for i in range(5):
+        board = generator.createBoard(40)
+        with open("boards.txt", "a") as f:
+            for i in range(len(board)):
+                for j in range(len(board[i])):
+                    cell = board[i][j]
+                    if j != 8:
+                        f.write(f"{cell.value}")
+                    else:
+                        f.write(f"{cell.value}\n")
+            
+            f.write("\n")
