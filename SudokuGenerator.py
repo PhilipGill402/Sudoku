@@ -4,7 +4,7 @@ from constants import *
 from cell import *
 
 class SudokuGenerator:
-    def createBoard(self, clues: int) -> list[list[Cell]]:
+    def createBoard(self, clues:int = 40) -> list[list[Cell]]:
         #generates a solved full board   
         board = [] 
 
@@ -126,7 +126,6 @@ class SudokuGenerator:
 
 if __name__ == "__main__":
     generator = SudokuGenerator()
-
     #creates i number of boards and puts them in the boards.txt file for later access
     for i in range(5):
         board = generator.createBoard(40)

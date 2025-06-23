@@ -51,6 +51,15 @@ class Board:
                     textRect = text.get_rect()
                     textRect.center = (i * SQUARE_SIZE + (SQUARE_SIZE//2), j * SQUARE_SIZE + (SQUARE_SIZE//2))
                     self.surface.blit(text, textRect)
+        #draw borders
+        top = pygame.draw.rect(self.surface, GREY, pygame.Rect(0, 0, WIDTH - 6, 5))
+        right = pygame.draw.rect(self.surface, GREY, pygame.Rect(WIDTH - 11, 0, 5, HEIGHT - 6))
+        left = pygame.draw.rect(self.surface, GREY, pygame.Rect(0, 0, 5, HEIGHT - 6))
+        down = pygame.draw.rect(self.surface, GREY, pygame.Rect(0, HEIGHT - 11, WIDTH - 6, 5))
+        first = pygame.draw.rect(self.surface, GREY, pygame.Rect((SQUARE_SIZE * 3) - 5, 0, 10, HEIGHT - 6))
+        second = pygame.draw.rect(self.surface, GREY, pygame.Rect((SQUARE_SIZE * 6) - 5, 0, 10, HEIGHT - 6))
+        topFirst = pygame.draw.rect(self.surface, GREY, pygame.Rect(0, (SQUARE_SIZE * 3) - 5, WIDTH - 6, 10))
+        topSecond = pygame.draw.rect(self.surface, GREY, pygame.Rect(0, (SQUARE_SIZE * 6) - 5, WIDTH - 6, 10))
 
     def drawSolvedBoard(self):
         self.surface.fill(BLACK)
